@@ -1102,7 +1102,7 @@ class SoC(LiteXModule, SoCCoreCompat):
         self.add_module(name=name, module=SoCController(**kwargs))
 
     # Add/Init RAM ---------------------------------------------------------------------------------
-    def add_ram(self, name, origin, size, contents=[], mode="rwx"):
+    def add_ram(self, name, origin, size, contents=[], mode="rwx", custom: bool = False):
         ram_cls = {
             "wishbone": wishbone.SRAM,
             "axi-lite": axi.AXILiteSRAM,
@@ -1119,7 +1119,8 @@ class SoC(LiteXModule, SoCCoreCompat):
             bursting      = self.bus.bursting
         )
         ram = ram_cls(size, bus=ram_bus, init=contents, read_only=("w" not in mode), name=name)
-        self.bus.add_slave(name=name, slave=ram.bus, region=SoCRegion(origin=origin, size=size, mode=mode))
+        region = SoCRegion(origin=origin, size=size, mode=mode, cached=(not custom), linker=custom)
+        self.bus.add_slave(name=name, slave=ram.bus, region=region)
         self.check_if_exists(name)
         self.logger.info("RAM {} {} {}.".format(
             colorer(name),

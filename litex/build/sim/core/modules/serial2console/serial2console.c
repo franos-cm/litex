@@ -116,28 +116,23 @@ out:
 static int serial2console_add_pads(void *sess, struct pad_list_s *plist)
 {
   int ret = RC_OK;
-  struct session_s *s = (struct session_s*) sess;
+  struct session_s *s = (struct session_s *)sess;
   struct pad_s *pads;
 
-  if(!sess || !plist) {
+  if (!sess || !plist)
+  {
     ret = RC_INVARG;
     goto out;
   }
   pads = plist->pads;
-  if(!strcmp(plist->name, "serial")) {
-    litex_sim_module_pads_get(pads, "sink_data", (void**)&s->rx);
-    litex_sim_module_pads_get(pads, "sink_valid", (void**)&s->rx_valid);
-    litex_sim_module_pads_get(pads, "sink_ready", (void**)&s->rx_ready);
-    litex_sim_module_pads_get(pads, "source_data", (void**)&s->tx);
-    litex_sim_module_pads_get(pads, "source_valid", (void**)&s->tx_valid);
-    litex_sim_module_pads_get(pads, "source_ready", (void**)&s->tx_ready);
-  }
-
-  if(!strcmp(plist->name, "sys_clk"))
-    litex_sim_module_pads_get(pads, "sys_clk", (void**) &s->sys_clk);
-
-out:
-  return ret;
+  if (!strcmp(plist->name, "serial_term"))
+  {
+    litex_sim_module_pads_get(pads, "sink_data", (void **)&s->rx);
+    litex_sim_module_pads_get(pads, "sink_valid", (void **)&s->rx_valid);
+    litex_sim_module_pads_get(pads, "sink_ready", (void **)&s->rx_ready);
+    litex_sim_module_pads_get(pads, "source_data", (void **)&s->tx);
+    litex_sim_module_pads_get(pads, "source_valid", (void **)&s->tx_valid);
+    litex_sim_module_pads_get(pads, "source_ready", (void **)&s->tx_ready);
 }
 
 static int serial2console_tick(void *sess, uint64_t time_ps) {
